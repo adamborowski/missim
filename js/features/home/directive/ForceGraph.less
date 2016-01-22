@@ -1,0 +1,90 @@
+force-graph {
+
+  @A: #a6186e;
+  @T: green;
+  @C: yellow;
+  @G: blue;
+
+  .bullet(@baseColor) {
+    circle {
+      fill: @baseColor;
+    }
+    .node-letter {
+      fill: contrast(@baseColor, #222, #ddd);
+    }
+  }
+
+  [data-letter="A"] {
+    .bullet(@A);
+  }
+
+  [data-letter="C"] {
+    .bullet(@C);
+  }
+
+  [data-letter="T"] {
+    .bullet(@T);
+  }
+  [data-letter="G"] {
+    .bullet(@G);
+  }
+
+
+  display: block;
+  svg {
+    border: 1px dotted #cccccc;
+    margin: auto;
+    display: block;
+  }
+
+  rect {
+    fill: none;
+    pointer-events: all;
+  }
+
+  .node {
+    cursor: pointer;
+  }
+  .node-letter {
+  }
+
+  circle {
+    fill: #ccc;
+  }
+
+  .cursor {
+    fill: none;
+    stroke: brown;
+    pointer-events: none;
+  }
+
+  .free {
+    alpha: .8;
+  }
+
+  .link {
+    stroke: #999;
+    stroke-width: 2px;
+    &.vertical {
+      stroke-dasharray: 2;
+      stroke-dashoffset: 3;
+      stroke: #1c6e1c;
+    }
+    &.hidden {
+      display: none;
+    }
+  }
+}
+
+.acgt-form {
+  input {
+    text-transform: uppercase;
+  }
+}
+
+.navbar-brand {
+  color: #ffcc33!important;
+  font-size: 5em!important;
+  line-height: 1em !important;
+  vertical-align: middle;
+}
