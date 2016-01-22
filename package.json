@@ -32,7 +32,6 @@
     "angular-theme-spinner": "^1.2.3",
     "bootstrap": "^3.3.6",
     "bootstrap-additions": "0.3.1",
-    "paper": "^0.9.25",
     "splash-screen": "^2.2.2"
   },
   "devDependencies": {
