@@ -1,11 +1,11 @@
 <div class="container" role="main">
 
     <div class="jumbotron" style="padding: 10px 60px;">
-        <p class="pull-right">Visualized using <a href="http://easelj">http://d3js.org</a></p>
-        <h2>NtSeq nucleotid aligment</h2>
+        <p class="pull-right">Wizualizacja za pomocą <a href="http://paperjs.org/">http://paperjs.org/</a></p>
+        <h2>Kula i równia pochyła</h2>
         <p>
-            This app visualizes <a href=" https://keithwhor.github.io/NtSeq/">BioJS &raquo; NtSeq</a> JavaScript bioinformatics library
-            for nucleotide sequence manipulation and analysis. This demo simulates local pairwise nucleotides alignment.
+            Symulowane zjawisko przedstawia kulę staczającą się po równi pochyłej.
+            Przyjęty model zakłada istnienie tarcia wyłącznie statycznego pomiędzy kulą a równią, zatem kula nie ześlizguje się.
         </p>
     </div>
     <div class="jumbotron" style="padding: 10px;" ng-init="seq1='CACTTTTCACTTTTATATT';seq2='CACATAWWT'">
@@ -23,7 +23,7 @@
         </form>
     </div>
     <div class="jumbotron" style="padding: 10px 60px;">
-        <force-graph seq1="{{seq1}}" seq2="{{seq2}}"></force-graph>
+        <simulation seq1="{{seq1}}" seq2="{{seq2}}"></simulation>
     </div>
 
 

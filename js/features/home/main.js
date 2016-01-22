@@ -14,7 +14,7 @@ import Routes from './Routes';
 import HomeController from './controller/HomeController';
 import HomeService from './service/HomeService';
 import customTpl from './partials/custom.html';
-import ForceGraph from './directive/ForceGraph'
+import Simulation from './directive/Simulation'
 
 class Feature extends FeatureBase {
 
@@ -26,7 +26,7 @@ class Feature extends FeatureBase {
     execute() {
         this.controller('HomeController', HomeController);
         this.service('HomeService', HomeService);
-        this.directive("forceGraph", ForceGraph);
+        this.directive("simulation", Simulation);
         this.run([
             '$templateCache',
             function($templateCache) {

@@ -1,7 +1,7 @@
 {
-  "name": "BioInf2",
+  "name": "missim",
   "version": "1.0.0",
-  "description": "D3JS+NtSeq Demo",
+  "description": "MiSS Demo",
   "files": [
     "etc",
     "img",
@@ -32,7 +32,7 @@
     "angular-theme-spinner": "^1.2.3",
     "bootstrap": "^3.3.6",
     "bootstrap-additions": "0.3.1",
-    "d3": "^3.5.12",
+    "paper": "^0.9.25",
     "splash-screen": "^2.2.2"
   },
   "devDependencies": {
