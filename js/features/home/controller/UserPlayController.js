@@ -45,6 +45,12 @@ export default class UserPlayController {
 
     start() {
         if (!this.playing) {
+            if (this.direction == 1 && this._frame == this.lastFrame) {
+                this._frame = this.firstFrame;
+            }
+            else if (this.direction == -1 && this._frame == this.firstFrame) {
+                this._frame = this.lastFrame;
+            }
             this._timeout = true;
             this._timeoutHandler();
         }
