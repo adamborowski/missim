@@ -1,4 +1,4 @@
-<div class="container" role="main">
+<div class="container" role="main" ng-controller="UserPlayController as controller" ng-init="controller.init(0,100)">
 
     <div class="jumbotron" style="padding: 10px 60px;">
         <p class="pull-right">Wizualizacja za pomocą <a href="http://paperjs.org/">http://paperjs.org/</a></p>
@@ -8,22 +8,54 @@
             Przyjęty model zakłada istnienie tarcia wyłącznie statycznego pomiędzy kulą a równią, zatem kula nie ześlizguje się.
         </p>
     </div>
-    <div class="jumbotron" style="padding: 10px;" ng-init="seq1='CACTTTTCACTTTTATATT';seq2='CACATAWWT'">
-        <form class="form acgt-form">
-            <div class="form-group">
-                <label for="exampleInputEmail1">Sequence 1</label>
-                <input type="text" class="form-control" id="exampleInputEmail1" ng-model="seq1"
-                       placeholder="Sequence 1">
-            </div>
-            <div class="form-group">
-                <label for="exampleInputPassword1">Sequence 2</label>
-                <input type="text" class="form-control" id="exampleInputPassword1" ng-model="seq2"
-                       placeholder="Sequence 2">
-            </div>
-        </form>
+    <div class="jumbotron" style="padding: 10px;">
+        <div class="btn-toolbar" ng-init="min=500;max=10">
+            <button class="btn btn-default" type="submit" ng-click="controller.gotoFirstFrame()"
+                    tooltip="Przewiń do początku">
+                <span class="glyphicon glyphicon-fast-backward" aria-hidden="true"></span>
+            </button>
+            <button class="btn btn-default" type="submit" ng-click="controller.prevFrame()"
+                    tooltip="Przejdź do poprzedniej klatki">
+                <span class="glyphicon glyphicon-backward" aria-hidden="true"></span>
+            </button>
+
+            <button class="btn btn-default" type="submit" ng-click="controller.togglePlay()"
+                    ng-class="{active: controller.playing}" tooltip="{{controller.playing?'Zatrzymaj':'Odtwórz'}}">
+            <span class="glyphicon"
+                  ng-class="{'glyphicon-play':!controller.playing, 'glyphicon-pause': controller.playing}"
+                  aria-hidden="true"></span>
+            </button>
+
+            <button class="btn btn-default" type="submit" ng-click="controller.nextFrame()"
+                    tooltip="Przejdź do następnej klatki">
+                <span class="glyphicon glyphicon-forward" aria-hidden="true"></span>
+            </button>
+            <button class="btn btn-default" type="submit" ng-click="controller.gotoLastFrame()"
+                    tooltip="Przewiń do końca">
+                <span class="glyphicon glyphicon-fast-forward" aria-hidden="true"></span>
+            </button>
+
+            <button class="btn btn-default" type="submit" ng-click="controller.toggleDirection()"
+                    ng-class="{active: controller.direction==-1}"
+                    tooltip="{{controller.direction!=1?'Przywróć normalny':'Odwróć' }} kierunek odwarzania"
+            >
+                <span class="glyphicon glyphicon-resize-horizontal" aria-hidden="true"></span>
+            </button>
+            <button class="btn btn-default" type="submit" ng-click="controller.toggleLoop()"
+                    ng-class="{active: controller.loop}"
+                    tooltip="Odtwarzaj {{controller.loop?'jednokrotnie':'w pętli' }}"
+            >
+                <span class="glyphicon glyphicon-repeat" aria-hidden="true"></span>
+            </button>
+            <slider min="controller.firstFrame" max="controller.lastFrame" value="controller.frame" title="Pasek postępu odtwarzania"></slider>
+            <slider min="min" max="max" value="controller.frameDuration" title="1/FPS"></slider>
+
+        </div>
     </div>
     <div class="jumbotron" style="padding: 10px 10px;">
-        <simulation seq1="{{seq1}}" seq2="{{seq2}}"></simulation>
+        <simulation frame="{{controller.frame}}"></simulation>
+
+
     </div>
 
 

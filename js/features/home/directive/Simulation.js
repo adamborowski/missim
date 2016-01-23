@@ -33,9 +33,30 @@ class Ball {
 }
 
 
-class ForceGraph {
+class Simulator {
+    constructor() {
+        this.letter = new paper.PointText({
+            point: [50, 50],
+            content: 'The contents of the point text',
+            fillColor: 'black',
+            fontFamily: 'Ubuntu',
+            fontWeight: 'bold',
+            fontSize: 25
+        });
+    }
+
+    renderFrame(frame) {
+        this.letter.content = "frame: " + frame;
+    }
+
+
+}
+
+
+class Simulation {
 
     constructor(scope, element, attrs) {
+
 
         var canvas = document.createElement("canvas");
         element[0].appendChild(canvas);
@@ -43,25 +64,19 @@ class ForceGraph {
 
         // Create an empty project and a view for the canvas:
         paper.setup(canvas);
-        // Create a Paper.js Path to draw a line into it:
-        var path = new paper.Path();
-        // Give the stroke a color
-        path.strokeColor = 'black';
-        var start = new paper.Point(100, 100);
-        // Move to start and draw a line from there
-        path.moveTo(start);
-        // Note that the plus operator on Point objects does not work
-        // in JavaScript. Instead, we need to call the add() function:
-        path.lineTo(start.add([200, -50]));
-        // Draw the view now:
 
         paper.view.viewSize = new paper.Size(700, 600);
 
 
-        for (var i = 0; i < 10; i++) {
-            var ball = new Ball(i * 40, i * 40, i * 10);
-        }
+        var simulator = new Simulator();
 
+
+        simulator.renderFrame(attrs.frame);
+
+        scope.$watch("frame", (value)=> {
+            simulator.renderFrame(value);
+            paper.view.draw();
+        });
 
         paper.view.draw();
 
@@ -75,11 +90,10 @@ export default () => {
     return {
         restrict: 'E',
         scope: {
-            seq1: "@seq1",
-            seq2: "@seq2"
+            frame: "@frame",
         },
         link: function () {
-            return new ForceGraph(...arguments)
+            return new Simulation(...arguments)
         }
     }
 };
