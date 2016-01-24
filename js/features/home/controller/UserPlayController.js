@@ -11,6 +11,7 @@ export default class UserPlayController {
         this._firstFrame = firstFrame;
         this._lastFrame = lastFrame;
         this._loop = true;
+        this._timeScale = 1;
         this._render();
         if (autoplay) {
             this.start();
@@ -139,7 +140,11 @@ export default class UserPlayController {
     }
 
     get second() {
-        return this._frame / this._fps;
+        return this._frame / this._fps * this.timeScale;
+    }
+
+    set second(val) {
+        this.gotoFrame(val * this.fps / this.timeScale);
     }
 
     set direction(val) {
@@ -181,5 +186,15 @@ export default class UserPlayController {
 
     get lastFrame() {
         return this._lastFrame;
+    }
+
+    get timeScale() {
+        return this._timeScale;
+    }
+
+    set timeScale(val) {
+        var second = this.second;
+        this._timeScale = val;
+        this.second = second;
     }
 }

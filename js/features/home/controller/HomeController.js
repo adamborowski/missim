@@ -17,6 +17,8 @@ export default class HomeController {
 
     constructor($scope, events, utils, HomeService, $alert) {
         $scope.angleFormatter = (a)=>"Nachylenie równi " + a + "°";
+        $scope.timeScaleFormatter = (a)=>"Tempo x " + a + "";
+        $scope.frameFormatter = (a)=>"Klatka #" + a + "";
         $scope.$alert = $alert;
 
 
