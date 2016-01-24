@@ -17,7 +17,7 @@ import Splash from 'splash-screen';
 class App {
 
     constructor() {
-        this.appName = 'BioInf2';
+        this.appName = 'MiSS';
         this.features = [];
         Features.forEach(function(Feature) {
             this.features.push(new Feature());

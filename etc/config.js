@@ -9,7 +9,7 @@
 'use strict';
 
 export default {
-    'appname': 'BioInf2',
+    'appname': 'MiSS',
     'base': '',
     'version': '1.0.0',
     'icp': 'ICP here',

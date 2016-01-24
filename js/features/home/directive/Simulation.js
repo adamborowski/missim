@@ -30,6 +30,8 @@ class Ball {
             position: this.point
         });
     }
+
+
 }
 
 class PhysicSimulator {
@@ -40,7 +42,6 @@ class PhysicSimulator {
 
 class SimToRealUnitConverter {
     constructor() {
-        this.timeScale = 1;//ile razy szybciej chcemy odtwarzać
         this.pixelsPerMeter = 100;//jeden metr ma 100 pixeli na ekranie
     }
 
@@ -48,9 +49,6 @@ class SimToRealUnitConverter {
         return meters * this.pixelsPerMeter;
     }
 
-    getRealTime(userTime) {
-        return userTime * this.timeScale;
-    }
 
 
 }
@@ -81,20 +79,11 @@ class Simulator {
             fontFamily: 'Open Sans',
             fontSize: 15
         });
-
         this.radius = 0.25;//metry??
-        this.ball = new Ball(0, 0, this.converter.getPixelsForMeters(this.radius));
+        this.ball = new Ball(0, 0, 1);
         this.angle = 5;
         this.g = 9.81;
         this.lastRotation = 0;
-        this.slopeStartY = this.radius * 2;
-
-        //
-
-
-        var angle = this.angle / 180 * Math.PI;
-
-        var distance = Math.sqrt(width * width + height * height);
 
         this.line = new paper.Path({
             strokeColor: 'black',
@@ -115,7 +104,7 @@ class Simulator {
     updateSlope() {
         var angle = this.angle / 180 * Math.PI;
         var sx = 0;
-        var sy = this.converter.getPixelsForMeters(this.slopeStartY);
+        var sy = this.converter.getPixelsForMeters(this.radius * 2);
         var ex = this.width;
         var ey = (ex - sx) / Math.cos(angle) * Math.sin(angle) + sy;
 
@@ -130,9 +119,8 @@ class Simulator {
         var sin_angle = Math.sin(angle);
         var cos_angle = Math.cos(angle);
 
-        var t = this.converter.getRealTime(time);
 
-        var s_t = 5 / 14 * this.g * sin_angle * t * t;
+        var s_t = 5 / 14 * this.g * sin_angle * time * time;
 
         var dx_t = s_t * cos_angle;
         var dy_t = s_t * sin_angle;
@@ -146,22 +134,21 @@ class Simulator {
         this.ball.item.position.y = this.converter.getPixelsForMeters(dy_t - offy + this.radius * 2);
 
 
-        var radius = this.radius;
-        var length = 2 * Math.PI * this.radius;
-
-
-        var d_w = s_t / (length) * 2 * Math.PI;
-
-        d_w = d_w / Math.PI * 180;
-
-
-        this.ball.item.rotate(d_w - this.lastRotation);
-
-
-        this.lastRotation = d_w;
+        if (this.radius > 0) {
+            var length = 2 * Math.PI * this.radius;
+            var d_w = s_t / (length) * 2 * Math.PI;
+            d_w = d_w / Math.PI * 180;
+            this.ball.item.rotate(d_w - this.lastRotation);
+            this.lastRotation = d_w;
+        }
 
         this.updateSlope();
 
+        //update ball
+        if (this.radius > 0) {
+            var meters = this.converter.getPixelsForMeters(this.radius);
+            this.ball.item.scaling = meters;
+        }
     }
 
 
@@ -199,11 +186,11 @@ class Simulation {
             paper.view.draw();
         });
 
-        //scope.$watch("radius", (value)=> {
-        //    simulator.radius = Number(value);
-        //    simulator.renderFrame(Number(attrs.time));
-        //    paper.view.draw();
-        //});
+        scope.$watch("radius", (value)=> {
+            simulator.radius = Number(value) / 100; //cm->m
+            simulator.renderFrame(Number(attrs.time));
+            paper.view.draw();
+        });
 
         paper.view.draw();
 
