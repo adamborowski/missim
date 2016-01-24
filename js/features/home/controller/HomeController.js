@@ -16,10 +16,16 @@ export default class HomeController {
 
 
     constructor($scope, events, utils, HomeService, $alert) {
-        $scope.angleFormatter = (a)=>"Nachylenie równi " + a + "°";
-        $scope.timeScaleFormatter = (a)=>"Tempo x " + a + "";
-        $scope.frameFormatter = (a)=>"Klatka #" + a + "";
         $scope.$alert = $alert;
+
+
+        $scope.params = {
+            radius: {min: 1, max: 100, value: 35, formatter: (o)=>`Promień kuli ${o} cm`},
+            angle: {min: 0, max: 90, value: 20, formatter: (o)=>`Nachylenie równi ${o} °`},
+            timeScale: {min: 0.1, max: 2, step: 0.1, formatter: (o)=>`Tempo x ${o}`},
+            slopeHeight: {min: 25, max: 10000, step: 1, value: 5, formatter: (o)=>`Wysokość równi ${o} cm`},
+            frame: {formatter: (o)=>`Klatka #${o}`}
+        };
 
 
         var noty = function (type, msg) {
