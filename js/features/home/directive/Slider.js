@@ -6,15 +6,17 @@ export default () => {
     return {
         restrict: 'E',
         scope: {
-            min: "=",
-            max: "=",
-            value: "="
+            min: "@",
+            max: "@",
+            value: "=",
+            title: '='
         },
         link: function (scope, elements, attr) {
             var opt = {
                 min: Number(scope.min),
                 max: Number(scope.max),
-                value: Number(scope.value)
+                value: Number(scope.value),
+                formatter: scope.title
             };
             if (opt.min > opt.max) {
                 opt.reversed = true;

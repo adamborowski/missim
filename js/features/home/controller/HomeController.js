@@ -13,9 +13,12 @@ export default class HomeController {
 
 
     }
-    constructor($scope, events, utils, HomeService, $alert) {
 
+
+    constructor($scope, events, utils, HomeService, $alert) {
+        $scope.angleFormatter = (a)=>"Nachylenie równi " + a + "°";
         $scope.$alert = $alert;
+
 
         var noty = function (type, msg) {
             events.emit('alert', {type: type, message: msg});

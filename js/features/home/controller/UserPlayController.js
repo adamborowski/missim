@@ -1,45 +1,41 @@
 import paper from "../../../vendor/paper-full.min.js"
 export default class UserPlayController {
-    constructor($timeout) {
-        this.$timeout = $timeout;
+    constructor($interval) {
+        this.$interval = $interval;
     }
 
-    init(firstFrame, lastFrame) {
-        this._frameDuration = 25;
+    init(firstFrame, lastFrame, autoplay) {
+        this._fps = 40;
         this._direction = 1;
         this._frame = 0;
         this._firstFrame = firstFrame;
         this._lastFrame = lastFrame;
         this._loop = true;
-        this._timeoutHandler();
+        this._render();
+        if (autoplay) {
+            this.start();
+        }
     }
 
     _render() {
         //this._frameRenderer.renderFrame(this._frame);
     }
 
-    _timeoutHandler() {
+    _nextFrameHandler() {
         //console.debug("timeout handler frame #" + this.frame);
-        this._render();
-        if (this.playing) {
-            this._timeout = null;
-            var nextFrame = null;
-            var frame = this.frame;
-            if (this.direction == 1) {
-                if (frame < this.lastFrame) nextFrame = frame + 1;
-                else if (this.loop) nextFrame = this.firstFrame;
-            }
-            else {
-                if (frame > this.firstFrame) nextFrame = frame - 1;
-                else if (this.loop) nextFrame = this.lastFrame;
-            }
-            if (nextFrame != null) {
-
-                this._timeout = this.$timeout(()=> {
-                    this._frame = nextFrame;
-                    this._timeoutHandler();
-                }, this._frameDuration);
-            }
+        var nextFrame = null;
+        var frame = this.frame;
+        if (this.direction == 1) {
+            if (frame < this.lastFrame) nextFrame = frame + 1;
+            else if (this.loop) nextFrame = this.firstFrame;
+        }
+        else {
+            if (frame > this.firstFrame) nextFrame = frame - 1;
+            else if (this.loop) nextFrame = this.lastFrame;
+        }
+        if (nextFrame != null) {
+            this._frame = nextFrame;
+            this._render();
         }
     }
 
@@ -51,14 +47,13 @@ export default class UserPlayController {
             else if (this.direction == -1 && this._frame == this.firstFrame) {
                 this._frame = this.lastFrame;
             }
-            this._timeout = true;
-            this._timeoutHandler();
+            this._interval = this.$interval(()=>this._nextFrameHandler(), 1000 / this._fps);
         }
     }
 
     stop() {
-        this.$timeout.cancel(this._timeout);
-        this._timeout = null;
+        this.$interval.cancel(this._interval);
+        this._interval = null;
     }
 
     togglePlay() {
@@ -71,7 +66,7 @@ export default class UserPlayController {
     }
 
     get playing() {
-        return this._timeout != null;
+        return this._interval!= null;
     }
 
     nextFrame() {
@@ -131,16 +126,20 @@ export default class UserPlayController {
         this.gotoFrame(val);
     }
 
-    set frameDuration(val) {
-        this._frameDuration = val;
+    set fps(val) {
+        this._fps = val;
         if (this.playing) {
             this.stop();
             this.start();
         }
     }
 
-    get frameDuration() {
-        return this._frameDuration;
+    get fps() {
+        return this._fps;
+    }
+
+    get second() {
+        return this._frame / this._fps;
     }
 
     set direction(val) {

@@ -1,15 +1,8 @@
-<div class="container" role="main" ng-controller="UserPlayController as controller" ng-init="controller.init(0,100)">
+<div class="container" role="main" ng-controller="UserPlayController as controller"
+     ng-init="controller.init(0,1000, true);min=500;max=10; angle=7;radius=25   ">
 
-    <div class="jumbotron" style="padding: 10px 60px;">
-        <p class="pull-right">Wizualizacja za pomocą <a href="http://paperjs.org/">http://paperjs.org/</a></p>
-        <h2>Kula i równia pochyła</h2>
-        <p>
-            Symulowane zjawisko przedstawia kulę staczającą się po równi pochyłej.
-            Przyjęty model zakłada istnienie tarcia wyłącznie statycznego pomiędzy kulą a równią, zatem kula nie ześlizguje się.
-        </p>
-    </div>
     <div class="jumbotron" style="padding: 10px;">
-        <div class="btn-toolbar" ng-init="min=500;max=10">
+        <div class="btn-toolbar">
             <button class="btn btn-default" type="submit" ng-click="controller.gotoFirstFrame()"
                     tooltip="Przewiń do początku">
                 <span class="glyphicon glyphicon-fast-backward" aria-hidden="true"></span>
@@ -47,17 +40,60 @@
             >
                 <span class="glyphicon glyphicon-repeat" aria-hidden="true"></span>
             </button>
-            <slider min="controller.firstFrame" max="controller.lastFrame" value="controller.frame" title="Pasek postępu odtwarzania"></slider>
-            <slider min="min" max="max" value="controller.frameDuration" title="1/FPS"></slider>
-
+            <slider min="{{controller.firstFrame}}" max="{{controller.lastFrame}}" value="controller.frame"
+            ></slider>
+            <slider min="0" max="90" value="angle" title="angleFormatter"></slider>
         </div>
+
     </div>
+
+    <div class="jumbotron" style="padding:1px 10px 10px 10px">
+        <h5>Ustawienia parametrów symulacji</h5>
+        <form class="form-horizontal">
+            <div class="form-group form-group-sm">
+                <label class="col-sm-2 control-label">Kąt nachylenia</label>
+                <div class="col-sm-2">
+                    <div class="input-group">
+                        <input class="form-control" type="number" ng-model="angle"
+                               min="0" max="90" required
+                        >
+                        <div class="input-group-addon">&deg;</div>
+                    </div>
+                </div>
+                <label class="col-sm-2 control-label">Promień kuli</label>
+                <div class="col-sm-2">
+                    <div class="input-group">
+                        <input class="form-control" type="number" ng-model="radius"
+                               min="1" max="100" required
+                        >
+                        <div class="input-group-addon">cm</div>
+                    </div>
+                </div>
+                <label class="col-sm-2 control-label">Wysokość równi</label>
+                <div class="col-sm-2">
+                    <div class="input-group">
+                        <input class="form-control" type="number" ng-model="height"
+                               min="1" max="100" required
+                        >
+                        <div class="input-group-addon">cm</div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
     <div class="jumbotron" style="padding: 10px 10px;">
-        <simulation frame="{{controller.frame}}"></simulation>
-
-
+        <simulation time="{{controller.second}}" angle="{{angle}}" radius="{{radius}}"></simulation>
     </div>
-
+    <div class="jumbotron" style="padding: 10px 60px;">
+        <p class="pull-right">Wizualizacja za pomocą <a href="http://paperjs.org/">http://paperjs.org/</a></p>
+        <h2>Kula i równia pochyła</h2>
+        <p style="font-size: 1.1em">
+            Symulowane zjawisko przedstawia kulę staczającą się po równi pochyłej.
+            Przyjęty model zakłada istnienie tarcia wyłącznie statycznego pomiędzy kulą a równią, zatem kula nie
+            ześlizguje się.
+        </p>
+    </div>
 
 
 </div> <!-- /container -->
