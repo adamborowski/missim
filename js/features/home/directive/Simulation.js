@@ -114,6 +114,19 @@ class Simulator {
                 [-1, height + 1]
             ]
         });
+        //todo setup gropund properly, especially not moving points
+        this.ground = new paper.Path({
+            strokeColor: 'black',
+            strokeWidth: 1,
+            fillColor: '#337744',
+            closed: true,
+            segments: [
+                [-1, 0],
+                [width + 1, 0],
+                [width + 1, height + 1],
+                [-1, height + 1]
+            ]
+        });
 
 
     }
@@ -122,16 +135,37 @@ class Simulator {
         var angle = this.angle / 180 * Math.PI;
         var sx = 0;
         var sy = this.converter.getPixelsForMeters(this.radius * 2);
+
+        var vOffset = this.vOffset = this.height - this.converter.getPixelsForMeters(this.radius * 2 + this.slopeHeight) - 10;//10 for ground space
+
+        sy += vOffset;
+
+
+
         var ex = this.width;
         var ey = (ex - sx) / Math.cos(angle) * Math.sin(angle) + sy;
 
         this.line.segments[0].point.y = sy;
         this.line.segments[1].point.y = ey;
+
+
+        this.line.segments[2].point.y = this.converter.getPixelsForMeters(this.slopeHeight) + sy;
+        this.line.segments[3].point.y = this.converter.getPixelsForMeters(this.slopeHeight) + sy;
+
+        //todo move ground
+        this.ground.segments[0].point.y = this.converter.getPixelsForMeters(this.slopeHeight) + sy;
+        this.ground.segments[1].point.y = this.converter.getPixelsForMeters(this.slopeHeight) + sy;
+        this.ground.segments[2].point.y = this.height + 1;
+        this.ground.segments[3].point.y = this.height + 1;
+
+
+
     }
 
     renderFrame(time) {
         this.letter.content = "" + this.$filter('number')(time, 2) + ' s.';
 
+        this.calculateDisplayScale(this);
 
         var angle = this.angle / 180 * Math.PI;
         var sin_angle = Math.sin(angle);
@@ -148,18 +182,16 @@ class Simulator {
         var offy = cos_angle * this.radius;
 
 
-        var ratio = this.height / this.slopeHeight;
-
-
-        this.converter.pixelsPerMeter = ratio;
 
 
 
 
-
+        this.updateSlope();
+        this.drawScale();
 
         this.ball.item.position.x = this.converter.getPixelsForMeters(dx_t + offx);
-        this.ball.item.position.y = this.converter.getPixelsForMeters(dy_t - offy + this.radius * 2);
+        this.ball.item.position.y = this.converter.getPixelsForMeters(dy_t - offy + this.radius * 2) + this.vOffset;
+        console.log(this.vOffset);
 
 
         if (this.radius > 0) {
@@ -170,14 +202,37 @@ class Simulator {
             this.lastRotation = d_w;
         }
 
-        this.updateSlope();
-        this.drawScale();
 
         //update ball
         if (this.radius > 0) {
             var meters = this.converter.getPixelsForMeters(this.radius);
             this.ball.item.scaling = meters;
         }
+    }
+
+    calculateDisplayScale() {
+
+        var angle = this.angle / 180 * Math.PI;
+        var sin_angle = Math.sin(angle);
+        var cos_angle = Math.cos(angle);
+
+        var verticalRatio = this.height / (this.slopeHeight + this.radius * 2);
+
+        var slopeWidth = this.slopeHeight / sin_angle;
+
+
+        //console.log('slopeW', slopeWidth, 'slopeH', this.slopeHeight);
+
+
+        var horizontalRatio = this.width / (slopeWidth);
+
+        //console.log('v', verticalRatio, 'h', horizontalRatio);
+
+
+        var ratio = Math.min(verticalRatio, horizontalRatio);//nie takie min, takie, w ktorym
+
+
+        this.converter.pixelsPerMeter = ratio;
     }
 
 
