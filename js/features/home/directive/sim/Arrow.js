@@ -1,46 +1,43 @@
 import paper from "../../../../vendor/paper-full.min.js"
 export default class Arrow {
-    constructor(sx, sy, ex, ey, isDouble, text) {
-        var endPoints = this.calcArrow(sx, sy, ex, ey);
-        var startPoints = this.calcArrow(ex, ey, sx, sy);
+
+    init() {
+        var sx = this.sx, sy = this.sy, ex = this.ex, ey = this.ey, isDouble = this.isDouble, text = this.text;
+        var o = this.objects = {};
+
+        var e = this.calcArrow(sx, sy, ex, ey);
+        var s = this.calcArrow(ex, ey, sx, sy);
+
 
         var style = {
             strokeColor: '#333333',
             strokeWidth: 1
         };
 
-        var e0 = endPoints[0],
-            e1 = endPoints[1],
-            e2 = endPoints[2],
-            e3 = endPoints[3],
-            s0 = startPoints[0],
-            s1 = startPoints[1],
-            s2 = startPoints[2],
-            s3 = startPoints[3];
-        var line = new paper.Path({
+        var line = o.line = new paper.Path({
             segments: [
                 [sx, sy],
                 [ex, ey]
             ],
             style: style
         });
-        var arrow1 = new paper.Path({
+        var arrow1 = o.arrow1 = new paper.Path({
             segments: [
-                [e0, e1],
+                [e[0], e[1]],
                 [ex, ey],
-                [e2, e3]
+                [e[2], e[3]]
             ],
             style: style
         });
 
 
-        var group = new paper.Group([line, arrow1], {});
+        var group = o.group = new paper.Group([line, arrow1], {});
         if (isDouble === true) {
-            var arrow2 = new paper.Path({
+            var arrow2 = o.arrow2 = new paper.Path({
                 segments: [
-                    [s0, s1],
+                    [s[0], s[1]],
                     [sx, sy],
-                    [s2, s3]
+                    [s[2], s[3]]
                 ],
                 style: style
             });
@@ -50,17 +47,59 @@ export default class Arrow {
 
 
         if (text != null) {
-            group.addChild(new paper.PointText({
+            var pointText = o.text = new paper.PointText({
                 point: [(ex + sx) / 2, (sy + ey) / 2 - 5],
                 content: text,
                 fillColor: 'black',
                 fontFamily: 'Open Sans',
                 fontSize: 10,
                 justification: 'center'
-            }));
+            });
+            group.addChild(pointText);
+        }
+    }
+
+    update() {
+        var sx = this.sx, sy = this.sy, ex = this.ex, ey = this.ey, isDouble = this.isDouble, text = this.text;
+        var o = this.objects;
+
+        var e = this.calcArrow(sx, sy, ex, ey);
+        var s = this.calcArrow(ex, ey, sx, sy);
+
+        o.line.segments[0].point.x = sx;
+        o.line.segments[0].point.y = sy;
+        o.line.segments[1].point.x = ex;
+        o.line.segments[1].point.y = ey;
+
+        o.arrow1.segments[0].point.x = e[0];
+        o.arrow1.segments[0].point.y = e[1];
+        o.arrow1.segments[1].point.x = ex;
+        o.arrow1.segments[1].point.y = ey;
+        o.arrow1.segments[2].point.x = e[2];
+        o.arrow1.segments[2].point.y = e[3];
+
+        if (o.arrow2) {
+            o.arrow2.segments[0].point.x = s[0];
+            o.arrow2.segments[0].point.y = s[1];
+            o.arrow2.segments[1].point.x = sx;
+            o.arrow2.segments[1].point.y = sy;
+            o.arrow2.segments[2].point.x = s[2];
+            o.arrow2.segments[2].point.y = s[3];
+        }
+
+        if (o.text) {
+            o.text.position.x = (ex + sx) / 2;
+            o.text.position.y = (sy + ey) / 2 - 5;
+            o.text.content = this.text;
         }
 
 
+    }
+
+
+    constructor(sx, sy, ex, ey, isDouble, text) {
+        this.sx = sx, this.sy = sy, this.ex = ex, this.ey = ey, this.isDouble = isDouble, this.text = text;
+        this.init();
     }
 
     calcArrow(px0, py0, px, py) {

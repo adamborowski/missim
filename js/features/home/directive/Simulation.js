@@ -58,8 +58,23 @@ class Simulator {
 
     drawScale() {
         var arrowWidth = this.converter.getPixelsForMeters(1);
+        if (arrowWidth < this.width * 0.1) {
+            arrowWidth *= 10;
+            this.arrow.text = "10m";
+        }
+        else if (arrowWidth > this.width * 0.9) {
+            arrowWidth /= 10;
+            this.arrow.text = "10 cm";
+        }
+        else {
+            this.arrow.text = "1 m";
+        }
         var margin = 20;
-        var arrow = new Arrow(this.width - arrowWidth - margin, margin, this.width - margin, margin, true, "1 metr");
+        var sx = this.width - arrowWidth - margin;
+        var ex = this.width - margin;
+        this.arrow.sx = sx;
+        this.arrow.ex = ex;
+        this.arrow.update();
     }
 
     constructor(converter, $filter) {
@@ -68,10 +83,6 @@ class Simulator {
         var width = this.width = 700;
         var height = this.height = 600;
 
-        this.drawScale();
-
-
-
 
         this.letter = new paper.PointText({
             point: [width - 57, 50],
@@ -79,11 +90,17 @@ class Simulator {
             fontFamily: 'Open Sans',
             fontSize: 15
         });
+
+
+        var arrowMargin = 20;
+        this.arrow = new Arrow(0, arrowMargin, 0, arrowMargin, true, "1 metr");
+
         this.radius = 0.25;//metry??
         this.ball = new Ball(0, 0, 1);
         this.angle = 5;
         this.g = 9.81;
         this.lastRotation = 0;
+        this.slopeHeight = 1;
 
         this.line = new paper.Path({
             strokeColor: 'black',
@@ -115,6 +132,7 @@ class Simulator {
     renderFrame(time) {
         this.letter.content = "" + this.$filter('number')(time, 2) + ' s.';
 
+
         var angle = this.angle / 180 * Math.PI;
         var sin_angle = Math.sin(angle);
         var cos_angle = Math.cos(angle);
@@ -130,6 +148,16 @@ class Simulator {
         var offy = cos_angle * this.radius;
 
 
+        var ratio = this.height / this.slopeHeight;
+
+
+        this.converter.pixelsPerMeter = ratio;
+
+
+
+
+
+
         this.ball.item.position.x = this.converter.getPixelsForMeters(dx_t + offx);
         this.ball.item.position.y = this.converter.getPixelsForMeters(dy_t - offy + this.radius * 2);
 
@@ -143,6 +171,7 @@ class Simulator {
         }
 
         this.updateSlope();
+        this.drawScale();
 
         //update ball
         if (this.radius > 0) {
@@ -192,6 +221,12 @@ class Simulation {
             paper.view.draw();
         });
 
+        scope.$watch("slopeHeight", (value)=> {
+            simulator.slopeHeight = Number(value) / 100; //cm->m
+            simulator.renderFrame(Number(attrs.time));
+            paper.view.draw();
+        });
+
         paper.view.draw();
 
 
@@ -204,9 +239,10 @@ export default ($filter) => {
     return {
         restrict: 'E',
         scope: {
-            time: "@time",
-            angle: "@angle",
-            radius: "@radius",
+            time: "@",
+            angle: "@",
+            radius: "@",
+            slopeHeight: "@"
         },
         link: function () {
             return new Simulation($filter, ...arguments)
