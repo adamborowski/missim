@@ -144,8 +144,17 @@ export default class UserPlayController {
     }
 
     set second(val) {
-        this.gotoFrame(val * this.fps / this.timeScale);
+        this.gotoFrame(Math.ceil(val * this.fps / this.timeScale));
     }
+
+    set endSecond(val) {
+        this._lastFrame = Math.ceil(val * this.fps / this.timeScale);
+    }
+
+    get endSecond() {
+        return this._lastFrame / this._fps * this.timeScale;
+    }
+
 
     set direction(val) {
         this._direction = val;

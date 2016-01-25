@@ -162,6 +162,21 @@ class Simulator {
 
     }
 
+    getTimeForEnd() {
+        var angle = this.angle / 180 * Math.PI;
+        var sin_angle = Math.sin(angle);
+        var endDistance = this.slopeHeight / sin_angle;
+        console.log(this.slopeHeight, endDistance);
+        return this.getTimeForDistance(endDistance);
+    }
+
+    getTimeForDistance(distance) {
+        var angle = this.angle / 180 * Math.PI;
+        var sin_angle = Math.sin(angle);
+        var cos_angle = Math.cos(angle);
+        return Math.sqrt((distance) / (5 / 14 * this.g * sin_angle));
+    }
+
     renderFrame(time) {
         this.letter.content = "" + this.$filter('number')(time, 2) + ' s.';
 
@@ -191,7 +206,6 @@ class Simulator {
 
         this.ball.item.position.x = this.converter.getPixelsForMeters(dx_t + offx);
         this.ball.item.position.y = this.converter.getPixelsForMeters(dy_t - offy + this.radius * 2) + this.vOffset;
-        console.log(this.vOffset);
 
 
         if (this.radius > 0) {
@@ -256,6 +270,9 @@ class Simulation {
 
         var simulator = new Simulator(new SimToRealUnitConverter(), $filter);
 
+        function updateEndTime() {
+            scope.endTime = simulator.getTimeForEnd();
+        }
 
         simulator.renderFrame(attrs.time);
 
@@ -267,18 +284,21 @@ class Simulation {
         scope.$watch("angle", (value)=> {
             simulator.angle = Number(value);
             simulator.renderFrame(Number(attrs.time));
+            updateEndTime();
             paper.view.draw();
         });
 
         scope.$watch("radius", (value)=> {
             simulator.radius = Number(value) / 100; //cm->m
             simulator.renderFrame(Number(attrs.time));
+            updateEndTime();
             paper.view.draw();
         });
 
         scope.$watch("slopeHeight", (value)=> {
             simulator.slopeHeight = Number(value) / 100; //cm->m
             simulator.renderFrame(Number(attrs.time));
+            updateEndTime();
             paper.view.draw();
         });
 
@@ -297,7 +317,8 @@ export default ($filter) => {
             time: "@",
             angle: "@",
             radius: "@",
-            slopeHeight: "@"
+            slopeHeight: "@",
+            endTime: "="
         },
         link: function () {
             return new Simulation($filter, ...arguments)
