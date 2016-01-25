@@ -203,7 +203,9 @@ export default class UserPlayController {
 
     set timeScale(val) {
         var second = this.second;
+        var endSecond = this.endSecond;
         this._timeScale = val;
         this.second = second;
+        this.endSecond = endSecond;
     }
 }

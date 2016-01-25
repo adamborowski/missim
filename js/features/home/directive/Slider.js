@@ -29,7 +29,9 @@ export default () => {
 
             var slider = new Slider(elements[0], opt);
             scope.$watch('min', (val)=> slider.min = Number(val));
-            scope.$watch('max', (val)=> slider.max = Number(val));
+            scope.$watch('max', (val)=> {
+                slider.setAttribute('max', Number(val));
+            });
             scope.$watch('step', (val)=> slider.step = Number(val) || 1);
             scope.$watch('value', (val)=> slider.setValue(Number(val)));
             slider.on('change', ()=> {

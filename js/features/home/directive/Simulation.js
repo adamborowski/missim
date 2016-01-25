@@ -166,7 +166,6 @@ class Simulator {
         var angle = this.angle / 180 * Math.PI;
         var sin_angle = Math.sin(angle);
         var endDistance = this.slopeHeight / sin_angle;
-        console.log(this.slopeHeight, endDistance);
         return this.getTimeForDistance(endDistance);
     }
 
