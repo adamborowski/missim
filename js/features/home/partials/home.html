@@ -106,8 +106,12 @@
     </div>
 
     <div class="jumbotron" style="padding: 10px 10px;">
-        <simulation time="{{controller.second}}" angle="{{params.angle.value}}"
-                    radius="{{params.radius.value}}"></simulation>
+        <simulation
+                time="{{controller.second}}"
+                angle="{{params.angle.value}}"
+                radius="{{params.radius.value}}"
+                slopeHeight="{{params.slopeHeight.value}}"
+        ></simulation>
     </div>
     <div class="jumbotron" style="padding: 10px 60px;">
         <p class="pull-right">Wizualizacja za pomocą <a href="http://paperjs.org/">http://paperjs.org/</a></p>
